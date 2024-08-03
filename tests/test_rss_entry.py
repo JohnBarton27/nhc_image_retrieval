@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytz
 
-from lib.rss_entry import RssEntry
+from nhc_image_retrieval.lib.rss_entry import RssEntry
 
 
 def test_get_from_json_happy_path():

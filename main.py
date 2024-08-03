@@ -4,7 +4,7 @@ import feedparser
 import pytz
 import requests
 
-from lib.rss_entry import RssEntry
+from nhc_image_retrieval.lib.rss_entry import RssEntry
 
 parser = argparse.ArgumentParser(description="Gets the latest uncertainty track (or relevant image) for active storm.")
 parser.add_argument("--output", help="Output file name (defaults to output.png)", default="output.png")
