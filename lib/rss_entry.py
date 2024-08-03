@@ -44,6 +44,9 @@ class RssEntry:
 
     @staticmethod
     def __convert_to_eastern_time(date_str):
+        if not date_str:
+            return None
+
         gmt_datetime = datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S %Z")
 
         # Set the timezone to UTC

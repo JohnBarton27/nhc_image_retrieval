@@ -1,0 +1,32 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nhc-image-retrieval"
+version = "0.0.1"
+description = "Downloads images from the NOAA NHC website."
+readme = "README.md"
+authors = [{ name = "John Barton", email = "john@mediayoucanfeel.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["hurricane", "nhc", "image"]
+dependencies = [
+    "bs4",
+    "feedparser",
+    "pytz",
+    "requests"
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+dev = ["black", "isort", "pip-tools", "pytest"]
+
+[project.urls]
+Homepage = "https://github.com/JohnBarton27/nhc_image_retrieval"
