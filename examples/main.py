@@ -1,4 +1,5 @@
 import argparse
+import os
 from datetime import datetime
 import feedparser
 import pytz
@@ -11,6 +12,7 @@ parser.add_argument("--output", help="Output file name (defaults to output.png)"
 args = parser.parse_args()
 
 url = "https://www.nhc.noaa.gov/index-at.xml"
+DEFAULT_IMAGE_URL = "https://www.nhc.noaa.gov/xgtwo/two_atl_0d0.png"
 
 
 def main():
@@ -30,13 +32,25 @@ def main():
             if not entry.uncertainty_track_page_url:
                 continue
 
-            image_response = requests.get(entry.uncertainty_track_image_url)
-            if image_response.status_code != 200:
-                print("Failed to retrieve uncertainty track!")
-                continue
+            download_image(entry.uncertainty_track_image_url)
+            return
 
-            with open(args.output, "wb") as img_file:
-                img_file.write(image_response.content)
+    # Never found an active storm with available graphics
+    download_image(DEFAULT_IMAGE_URL)
+
+
+def download_image(image_url):
+    image_response = requests.get(image_url)
+    if image_response.status_code != 200:
+        print("Failed to retrieve uncertainty track!")
+        return
+
+    if os.path.exists(args.output):
+        print("Image already exists!")
+
+    with open(args.output, "wb") as img_file:
+        print("Writing updated image file!")
+        img_file.write(image_response.content)
 
 
 if __name__ == "__main__":

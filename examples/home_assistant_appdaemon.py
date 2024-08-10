@@ -6,16 +6,16 @@ import os
 import pytz
 import requests
 
-import nhc_image_retrieval
 from nhc_image_retrieval.lib.rss_entry import RssEntry
 
 IMAGE_PATH = "/homeassistant/www/hurricane_cone.png"
+DEFAULT_IMAGE_URL = "https://www.nhc.noaa.gov/xgtwo/two_atl_0d0.png"
 
 
-def download_image(entity, attribute, old, new, kwargs):
-    url = "https://www.nhc.noaa.gov/index-at.xml"
+def download_uncertainty_cone_image(entity, attribute, old, new, kwargs):
+    rss_feed_url = "https://www.nhc.noaa.gov/index-at.xml"
 
-    feed = feedparser.parse(url)
+    feed = feedparser.parse(rss_feed_url)
 
     now = datetime.now(tz=pytz.utc)
 
@@ -31,21 +31,30 @@ def download_image(entity, attribute, old, new, kwargs):
             if not entry.uncertainty_track_page_url:
                 continue
 
-            image_response = requests.get(entry.uncertainty_track_image_url)
-            if image_response.status_code != 200:
-                print("Failed to retrieve uncertainty track!")
-                continue
+            download_image(entry.uncertainty_track_image_url)
+            return
 
-            if os.path.exists(IMAGE_PATH):
-                print("Image already exists!")
+    # Never found an active storm with available graphics
+    download_image(DEFAULT_IMAGE_URL)
 
-            with open(IMAGE_PATH, "wb") as img_file:
-                print("Writing updated image file!")
-                img_file.write(image_response.content)
+
+def download_image(image_url):
+    image_response = requests.get(image_url)
+    if image_response.status_code != 200:
+        print("Failed to retrieve uncertainty track!")
+        return
+
+    if os.path.exists(IMAGE_PATH):
+        print("Image already exists!")
+
+    with open(IMAGE_PATH, "wb") as img_file:
+        print("Writing updated image file!")
+        img_file.write(image_response.content)
 
 
 class DownloadNhcImage(hass.Hass):
 
     def initialize(self):
         self.log("Hello!")
-        self.listen_state(download_image, "input_datetime.last_nhc_update")
+        self.listen_state(download_uncertainty_cone_image, "input_datetime.last_nhc_update")
+

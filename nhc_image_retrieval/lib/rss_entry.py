@@ -12,6 +12,12 @@ class RssEntry:
         self.published = published
         self.raw = raw
 
+    def __repr__(self):
+        return self.title
+
+    def __str__(self):
+        return self.summary
+
     @property
     def uncertainty_track_page_url(self):
         soup = BeautifulSoup(self.summary, "html.parser")
